@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ImplantaPro V2 • Gestão de Implantações</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="login" class="screen">
+  <form id="loginForm" class="card login-card">
+    <h1>ImplantaPro</h1>
+    <p class="muted">Gestão profissional de implantações</p>
+    <label>Usuário<input id="username" autocomplete="username" required></label>
+    <label>Senha<input id="password" type="password" autocomplete="current-password" required></label>
+    <button>Entrar</button>
+    <p id="loginError" class="error"></p>
+  </form>
+</div>
+
+<div id="app" class="hidden">
+  <aside>
+    <div class="brand">ImplantaPro <small>V2</small></div>
+    <button data-page="dashboard" class="nav active">📊 Dashboard</button>
+    <button data-page="implementations" class="nav">🚀 Implantações</button>
+    <button data-page="history" class="nav">🕘 Histórico</button>
+    <button data-page="admin" class="nav admin-only">🔐 Administração</button>
+    <div class="aside-bottom">
+      <span id="userBadge"></span>
+      <button id="logout" class="secondary">Sair</button>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <div>
+        <h2 id="pageTitle">Dashboard</h2>
+        <span id="connection" class="pill">API</span>
+      </div>
+      <div class="actions">
+        <button id="exportBtn" class="secondary">Exportar XLSX</button>
+        <label id="importLabel" class="button secondary admin-manager">Importar XLSX<input id="importFile" type="file" accept=".xlsx,.xls" hidden></label>
+        <button id="newBtn" class="primary">+ Nova implantação</button>
+      </div>
+    </header>
+
+    <section id="dashboard" class="page">
+      <div id="kpis" class="kpis"></div>
+      <div class="grid-2">
+        <div class="card"><h3>Implantações por responsável</h3><div id="byResponsible"></div></div>
+        <div class="card"><h3>Gargalos / motivos de pausa</h3><div id="bottlenecks"></div></div>
+      </div>
+    </section>
+
+    <section id="implementations" class="page hidden">
+      <div class="card filters">
+        <input id="search" placeholder="Pesquisar cliente ou sistema">
+        <select id="statusFilter"><option value="">Todos os status</option></select>
+        <select id="responsibleFilter"><option value="">Todos os responsáveis</option></select>
+        <label><input id="lateFilter" type="checkbox"> Somente atrasadas</label>
+      </div>
+      <div class="card table-wrap"><table><thead><tr>
+        <th>Cliente</th><th>Sistema</th><th>Responsável</th><th>Início</th><th>Prazo</th><th>Status</th><th></th>
+      </tr></thead><tbody id="tableBody"></tbody></table></div>
+    </section>
+
+    <section id="history" class="page hidden">
+      <div class="card table-wrap"><table><thead><tr><th>Data</th><th>Usuário</th><th>Ação</th><th>Entidade</th><th>Campo</th><th>Alteração</th></tr></thead>
+      <tbody id="historyBody"></tbody></table></div>
+    </section>
+
+    <section id="admin" class="page hidden">
+      <div class="grid-2">
+        <div class="card"><h3>Usuários</h3>
+          <form id="userForm" class="inline-form">
+            <input id="uName" placeholder="Nome" required><input id="uUsername" placeholder="Usuário" required>
+            <input id="uEmail" placeholder="E-mail"><input id="uPassword" placeholder="Senha" type="password" required>
+            <select id="uRole"><option value="admin">Administrador</option><option value="manager">Gerente</option><option value="implementer">Implantador</option><option value="viewer">Consulta</option></select>
+            <button>Adicionar</button>
+          </form>
+          <div id="usersList"></div>
+        </div>
+        <div class="card"><h3>Responsáveis</h3>
+          <form id="responsibleForm" class="inline-form"><input id="rName" placeholder="Nome" required><button>Adicionar</button></form>
+          <div id="responsiblesList"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden">
+  <form id="implementationForm" class="modal-card">
+    <div class="modal-head"><h3 id="modalTitle">Nova implantação</h3><button type="button" id="closeModal" class="icon">×</button></div>
+    <input id="implId" type="hidden">
+    <div class="form-grid">
+      <label>Cliente (ID)<input id="clientCode" required></label>
+      <label>Responsável<select id="responsibleId"></select></label>
+      <label>Sistema<input id="systemName"></label>
+      <label>Função<input id="functionName"></label>
+      <label>Status<select id="status"></select></label>
+      <label>Motivo da pausa<select id="pauseReason"></select></label>
+      <label>Data de início<input id="startDate" type="date" required></label>
+      <label>Prazo<input id="deadline" type="date" required></label>
+      <label>Data de conclusão<input id="completionDate" type="date"></label>
+      <label class="full">Detalhes / andamento<textarea id="details" rows="4"></textarea></label>
+    </div>
+    <div id="detailExtra" class="detail-extra"></div>
+    <div class="modal-actions"><button type="button" id="deleteBtn" class="danger">Excluir</button><span></span><button type="button" id="cancelBtn" class="secondary">Cancelar</button><button class="primary">Salvar</button></div>
+  </form>
+</div>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: implantapro-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: implantapro
+      POSTGRES_USER: implantapro
+      POSTGRES_PASSWORD: implantapro_dev_change_me
+    ports:
+      - "5432:5432"
+    volumes:
+      - implantapro_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U implantapro -d implantapro"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  implantapro_pgdata:
